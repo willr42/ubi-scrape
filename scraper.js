@@ -14,7 +14,6 @@ async function run() {
   // establish a browser
   const browser = await puppeteer.launch({
     ignoreHTTPSErrors: true,
-    headless: false,
   });
 
   // create a page object and wait for the content
@@ -82,15 +81,15 @@ async function downloadPage(page) {
   // The innertext is returning every element, we just want the first. There's probably a better way to do this...
   fixedNameElements = flattened.map((element) => {
     const nameArray = element.name.split('\n');
-    return { name: nameArray[0], url: element.url };
+    const fixedName = nameArray[0].replace('/', '');
+    return { name: fixedName, url: element.url };
   });
 
   // Finally, for each element in the final array, we download it.
   for (let index = 0; index < fixedNameElements.length; index++) {
     const element = fixedNameElements[index];
 
-    console.log(element.url);
-    //     await download(element.url, `${element.name}.pdf`);
+    await download(element.url, `output/${element.name}.pdf`);
   }
 }
 
